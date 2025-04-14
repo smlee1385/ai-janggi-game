@@ -1,0 +1,31 @@
+name: Flutter Android Build
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.6'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK to GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: build/app/outputs/flutter-apk/app-release.apk
+          tag: v1.0.${{ github.run_number }}
+          name: AI Janggi Game v1.0.${{ github.run_number }}
